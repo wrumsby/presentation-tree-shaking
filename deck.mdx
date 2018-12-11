@@ -1,0 +1,324 @@
+import { future } from 'mdx-deck/themes';
+import vsDark from 'prism-react-renderer/themes/vsDark';
+import { CodeSurfer } from 'mdx-deck-code-surfer';
+import { TwitterTweetEmbed } from 'react-twitter-embed';
+import Vimeo from '@u-wave/react-vimeo';
+
+export const replacer = (key, value) => typeof value === 'string' && value.length > 45 ? value.substring(0, 42) + '...' : value;
+
+export const theme = {
+  font: '"Roboto Condensed", system-ui, sans-serif',
+  weights: [400, 700],
+  monospace: '"Roboto Mono", monospace',
+  ...future,
+  codeSurfer: {
+    ...vsDark,
+    showNumbers: false
+  }
+};
+
+# How to Write Your Modules to Support Tree Shaking
+---
+# Apps vs. Libraries
+
+Apps - e.g. Conqa, Xero, TradeMe, Twitter
+Libraries - e.g. Vue, Formik, debug, Ramda
+---
+# Modules
+
+* ES6 modules
+* ES2015 modules
+* ES modules
+* ESM
+* Harmony modules
+---
+<CodeSurfer
+  title="ES modules"
+  code={require("!raw-loader!./samples/log.js")}
+  lang="js"
+/>
+---
+# How to Write Your ~~Modules~~ Libraries to Support Tree Shaking
+---
+# Why Suppport Tree Shaking?
+---
+![](https://media.giphy.com/media/7kn27lnYSAE9O/giphy.gif)
+---
+# Only bundle what you use
+
+ES modules support tree shaking
+
+CommonJS modules do not
+---
+<CodeSurfer
+  title="newrelic-browser.js"
+  code={require("!raw-loader!./samples/newrelic-browser.js")}
+  lang="js"
+  steps={[
+    { notes: '' },
+    { lines: [5] },
+    { range: [18, 22] },
+    { lines: [31, 32] }
+  ]}
+/>
+---
+# Story Time
+---
+In 2013 I presented at WDCNZ and suggested that we were 3 years away
+from being able to being able to use JavaScript modules.
+---
+<Vimeo video={"72690876"}/>
+---
+That was **five** years ago.
+---
+## For library authors
+
+With tools like Babel and TypeScript we've been able to write code using ES module syntax for a while now.
+---
+## For app authors
+
+Despite "support" for ES modules in browsers and Node, the support is limited.
+
+To consume ES modules we need to convert them to a format that's better supported.
+---
+## Remember This?
+
+ES modules support tree shaking
+
+CommonJS modules do not
+---
+### Can't tree shake our code
+
+![](https://media.giphy.com/media/d3mlE7uhX8KFgEmY/giphy.gif)
+
+### if it's using CommonJS
+
+<small>Typical Babel configurations will transform ES modules to CommonJS</small>
+---
+# We (Still) Need Tools
+
+**five** years later
+---
+## Tools We'll Be Using
+
+* [Babel](https://babeljs.io/)
+* [Browserslist](https://github.com/browserslist/browserslist)
+* [Webpack](https://webpack.js.org/)
+* [Rollup](https://rollupjs.org/)
+* [Jest](https://jestjs.io/)
+---
+## Let's Get Meta[data]
+---
+<CodeSurfer
+  title="Formik's package.json"
+  code={JSON.stringify(require("./samples/formik/package.json"), replacer, 2)}
+  lang="json"
+  steps={[
+    { notes: '' },
+    { range: [18, 19] }
+  ]}
+/>
+---
+<CodeSurfer
+  title="Vue's package.json"
+  code={JSON.stringify(require("./samples/vue/package.json"), replacer, 2)}
+  lang="json"
+  steps={[
+    { notes: '' },
+    { range: [5, 6] },
+    { lines: [15] }
+  ]}
+/>
+---
+<CodeSurfer
+  title="debug's package.json"
+  code={JSON.stringify(require("./samples/debug/package.json"), replacer, 2)}
+  lang="json"
+  steps={[
+    { notes: '' },
+    { range: [60, 61] }
+  ]}
+/>
+---
+Webpack will look for the following entries in `package.json` (in order):
+
+1. `browser`
+1. `module`
+1. `main`
+---
+## It's called *Web*pack for a reason.
+---
+* `browser` - if you want (we won't cover today)
+* `module` - ES module for Webpack
+* `main` - CommonJS for backwards compatibility, and NodeJS
+---
+## We have to configure our package so that Webpack can work with it
+---
+## Option 1
+
+Write your code in ES6 with ES modules and ship that to your app.
+---
+## However
+
+Do the browsers you support the same features as the environment you author in?
+
+If not you'll need to transpile, but default webpack excludes `node_modules`.
+---
+## Option 2
+
+Provide a "dist" with your package that distributes a build of your package that it works on your supported environments.
+
+<small>Formik and Vue do this</small>
+---
+## You might not need a really complication Babel configuration [^1] [^2]
+---
+## devDependencies
+
+```
+npm i -D @babel/cli
+npm i -D @babel/core
+npm i -D @babel/preset-env
+```
+---
+<CodeSurfer
+  title=".babelrc"
+  code={require("!raw-loader!./samples/complete/.babelrc")}
+  lang="json"
+  steps={[
+    { notes: 'This will be used by other tools like Jest too' }
+  ]}
+/>
+---
+\[1\]: not all polyfills
+
+<TwitterTweetEmbed
+  tweetId={'1033487452592201728'}
+/>
+---
+\[2\]: it's not going to be quite that simple (sorry)
+---
+# How do you define your
+## "target environment"?
+
+[Browserslist](https://github.com/browserslist/browserslist)!
+---
+<CodeSurfer
+  title=".browserslistrc"
+  code={require("!raw-loader!./samples/.browserslistrc")}
+  lang="yaml"
+/>
+---
+# Webpack
+
+Webpack 2+ supports tree shaking
+---
+## But
+
+<TwitterTweetEmbed
+  tweetId={'1060216917493981184'}
+/>
+
+<small>Webpack 5 will include Terser by default</small>
+---
+# Rollup
+
+<br/>
+<br/>
+<br/>
+
+![](https://media.giphy.com/media/54PaD9dWT0go/giphy.gif)
+
+##### Why do I need to use another tool?
+---
+<TwitterTweetEmbed
+  tweetId={'851455957460688896'}
+/>
+---
+<small>We're writing libraries</small>
+
+<br/>
+
+![](https://media.giphy.com/media/l4HnY84pKDQCwm7II/giphy.gif)
+---
+## devDependencies
+
+```
+npm i -D rollup
+npm i -D rollup-plugin-babel
+```
+---
+<CodeSurfer
+  title="package.json"
+  code={JSON.stringify(require("./samples/complete/package.json"), replacer, 2)}
+  lang="json"
+  steps={[
+    { notes: '' },
+    { range: [7, 9] },
+    { range: [19, 23], notes: 'Use Rollup to build cjs and esm distributions' }
+  ]}
+/>
+---
+<CodeSurfer
+  title="rollup.config.js"
+  code={require("!raw-loader!./samples/complete/rollup.config.js")}
+  lang="js"
+  steps={[
+    { notes: '' },
+    { range: [17, 29] },
+    { range: [5, 15] }
+  ]}
+/>
+---
+<CodeSurfer
+  title="build/.cjs.babelrc"
+  code={require("!raw-loader!./samples/complete/build/.cjs.babelrc")}
+  lang="json"
+/>
+---
+<CodeSurfer
+  title="build/.esm.babelrc"
+  code={require("!raw-loader!./samples/complete/build/.esm.babelrc")}
+  lang="json"
+  steps={[
+    { notes: '' },
+    { lines: [7], notes: 'YOU 100% NEED TO DO THIS' },
+    { range: [8, 10], notes: 'This will run all transforms, but ensure Uglify can minify' }
+  ]}
+/>
+---
+<TwitterTweetEmbed
+  tweetId={'1072180184290217985'}
+/>
+---
+![](https://media.giphy.com/media/z3piokwf0WPH81MOhu/giphy.gif)
+---
+## Don't Forget About Jest
+### And Other Tools That Use Babel
+
+Babel + Rollup = to generate CJS and ESM bundles
+
+<br/>
+
+Babel + Jest = to run tests
+
+<small>e.g. in a Node version that doesn't support ESM</small>
+<br/>
+<small>You could probably use `.cjs.babelrc` for Jest too</small>
+---
+![](https://media.giphy.com/media/EDt1m8p5hqXG8/giphy.gif)
+---
+# Is this scarey?
+![](https://media.giphy.com/media/3oz8y0bx23FDPCNoEU/source.gif)
+---
+# Don't be scared
+
+* It's not "hard"
+* Read docs
+* Be disciplined
+* Understand your stack
+---
+## Find Modules That Will Tree Shake
+
+https://www.pikapkg.com/
+---
+# The end

@@ -1,0 +1,15 @@
+{
+  "babelrc": false,
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "modules": false,
+        "targets": {
+          "uglify": true
+        },
+        "ignoreBrowserslistConfig": false
+      }
+    ]
+  ]
+}

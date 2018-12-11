@@ -1,0 +1,30 @@
+{
+  "name": "presentation-tree-shaking",
+  "version": "1.0.0",
+  "description": "Lightning Talk presentation on Writing Modules to support Tree Shaking for AkJS",
+  "main": "index.js",
+  "engines": {
+    "node": ">=10.14.1",
+    "npm": ">=6.4.1"
+  },
+  "scripts": {
+    "start": "mdx-deck deck.mdx",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "presentation",
+    "akjs",
+    "tree-shaking"
+  ],
+  "author": "Walter Rumsby",
+  "license": "MIT",
+  "dependencies": {
+    "@u-wave/react-vimeo": "^0.6.0",
+    "json-loader": "^0.5.7",
+    "mdx-deck": "^1.8.2",
+    "mdx-deck-code-surfer": "^0.5.3",
+    "prism-react-renderer": "^0.1.5",
+    "raw-loader": "^0.5.1",
+    "react-twitter-embed": "^2.0.4"
+  }
+}

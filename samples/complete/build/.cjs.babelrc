@@ -1,0 +1,15 @@
+{
+  "babelrc": false,
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "modules": "auto",
+        "targets": {
+          "node": "8.10"
+        },
+        "ignoreBrowserslistConfig": true
+      }
+    ]
+  ]
+}
