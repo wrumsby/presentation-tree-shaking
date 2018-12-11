@@ -22,6 +22,7 @@ export const theme = {
 # Apps vs. Libraries
 
 Apps - e.g. Conqa, Xero, TradeMe, Twitter
+
 Libraries - e.g. Vue, Formik, debug, Ramda
 ---
 # Modules
@@ -301,9 +302,9 @@ Babel + Rollup = to generate CJS and ESM bundles
 
 Babel + Jest = to run tests
 
-<small>e.g. in a Node version that doesn't support ESM</small>
+<small>Jest has it's own require implementation, see <a href="https://github.com/facebook/jest/issues/4842">Jest #4842</a></small>
 <br/>
-<small>You could probably use `.cjs.babelrc` for Jest too</small>
+<small>You could probably use <code>.cjs.babelrc</code> for Jest too</small>
 ---
 ![](https://media.giphy.com/media/EDt1m8p5hqXG8/giphy.gif)
 ---
